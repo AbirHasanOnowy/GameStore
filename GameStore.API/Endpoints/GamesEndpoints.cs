@@ -30,7 +30,7 @@ public static class GamesEndpoints
         new GameDto(8, "Hades", "Roguelike action", 24.99M, new DateOnly(2020, 09, 17)),
     ];
 
-    public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
+    public static void MapGamesEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/games");
 
@@ -99,7 +99,5 @@ public static class GamesEndpoints
                 return Results.NoContent();
             }
         );
-
-        return group;
     }
 };

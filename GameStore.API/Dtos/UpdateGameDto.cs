@@ -4,9 +4,9 @@ namespace GameStore.API.Dtos
 {
     // Required is used for input validation
     public record UpdateGameDto(
-        [Required] string Name,
-        [Required] string Genre,
-        [Required] decimal Price,
+        [Required] [MinLength(2), MaxLength(100)] string Name,
+        [Required] [MinLength(2), MaxLength(30)] string Genre,
+        [Range(0, 100)] decimal Price,
         [Required] DateOnly ReleaseDate
     );
 }
