@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GameStore.API.Dtos
 {
+    // Required is used for input validation
     public record UpdateGameDto(
-        string Name,
-        string Genre,
-        decimal Price,
-        DateOnly ReleaseDate
+        [Required] string Name,
+        [Required] string Genre,
+        [Required] decimal Price,
+        [Required] DateOnly ReleaseDate
     );
 }

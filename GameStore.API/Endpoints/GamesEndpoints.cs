@@ -30,12 +30,17 @@ public static class GamesEndpoints
         new GameDto(8, "Hades", "Roguelike action", 24.99M, new DateOnly(2020, 09, 17)),
     ];
 
-    public static void MapGamesEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
     {
-        //games
-        app.MapGet("/games", () => games);
-        app.MapGet(
-                "/games/{id}",
+        var group = app.MapGroup("/games");
+
+        //get all games
+        group.MapGet("/", () => games);
+
+        //get games by id
+        group
+            .MapGet(
+                "/{id}",
                 (int id) =>
                 {
                     var game = games.Find(game => game.Id == id);
@@ -43,8 +48,10 @@ public static class GamesEndpoints
                 }
             )
             .WithName(GetNameEndpointName);
-        app.MapPost(
-            "/games",
+
+        // Create game
+        group.MapPost(
+            "/",
             (CreateGameDto newGame) =>
             {
                 GameDto game = new(
@@ -59,8 +66,10 @@ public static class GamesEndpoints
                 return Results.CreatedAtRoute(GetNameEndpointName, new { id = game.Id }, game);
             }
         );
-        app.MapPut(
-            "/games/{id}",
+
+        // update a game by id
+        group.MapPut(
+            "/{id}",
             (int id, UpdateGameDto updatedGame) =>
             {
                 int index = games.FindIndex(game => game.Id == id);
@@ -79,8 +88,10 @@ public static class GamesEndpoints
                 return Results.NoContent();
             }
         );
-        app.MapDelete(
-            "/games/{id}",
+
+        // delete a game
+        group.MapDelete(
+            "/{id}",
             (int id) =>
             {
                 games.RemoveAll(game => game.Id == id);
@@ -88,5 +99,7 @@ public static class GamesEndpoints
                 return Results.NoContent();
             }
         );
+
+        return group;
     }
 };
