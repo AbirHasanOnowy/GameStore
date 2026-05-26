@@ -1,6 +1,5 @@
 using GameStore.API.Data;
 using GameStore.API.Endpoints;
-using GameStore.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
