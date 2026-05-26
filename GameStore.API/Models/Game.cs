@@ -7,5 +7,5 @@ public class Game
     public Genre? Genre { get; set; }
     public int GenreId { get; set; }
     public decimal price { get; set; }
-    public DateOnly ReleseDate { get; set; }
+    public DateOnly ReleaseDate { get; set; }
 }
