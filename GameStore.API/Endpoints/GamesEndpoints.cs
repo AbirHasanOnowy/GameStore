@@ -1,6 +1,7 @@
 using GameStore.API.Data;
 using GameStore.API.Dtos;
 using GameStore.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.API.Endpoints;
 
@@ -15,16 +16,19 @@ public static class GamesEndpoints
         //get all games
         group.MapGet(
             "/",
-            (GameStoreContext dbContext) =>
+            async (GameStoreContext dbContext) =>
             {
                 return Results.Ok(
-                    dbContext.Games.Select(game => new GameDetailsDto(
-                        game.Id,
-                        game.Name,
-                        game.GenreId,
-                        game.Price,
-                        game.ReleaseDate
-                    ))
+                    await dbContext
+                        .Games.Include(game => game.Genre)
+                        .Select(game => new GameDto(
+                            game.Id,
+                            game.Name,
+                            game.Genre!.Name,
+                            game.Price,
+                            game.ReleaseDate
+                        ))
+                        .ToListAsync<GameDto>()
                 );
             }
         );
