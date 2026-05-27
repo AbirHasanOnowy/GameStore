@@ -21,14 +21,15 @@ public static class GamesEndpoints
                 return Results.Ok(
                     await dbContext
                         .Games.Include(game => game.Genre)
-                        .Select(game => new GameDto(
+                        .Select(game => new GameSummaryDto(
                             game.Id,
                             game.Name,
                             game.Genre!.Name,
                             game.Price,
                             game.ReleaseDate
                         ))
-                        .ToListAsync<GameDto>()
+                        .AsNoTracking() // AsNoTracking is used to improve performance when we don't need to track changes to the entities
+                        .ToListAsync()
                 );
             }
         );
@@ -113,13 +114,8 @@ public static class GamesEndpoints
             "/{id}",
             async (int id, GameStoreContext dbContext) =>
             {
-                var game = await dbContext.Games.FindAsync(id);
-
-                if (game is null)
-                    return Results.BadRequest("Game doesn't exist");
-
-                dbContext.Games.Remove(game);
-                await dbContext.SaveChangesAsync();
+                await dbContext.Games.Where(game => game.Id == id).ExecuteDeleteAsync();
+                // ExecuteDeleteAsync is used to delete entities without loading them into memory, which improves performance
 
                 return Results.NoContent();
             }
